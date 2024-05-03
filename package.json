@@ -1,0 +1,19 @@
+{
+  "name": "ts-monorepo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "format": "prettier --write .",
+    "ui": "pnpm --filter ui",
+    "webapp": "pnpm --filter webapp",
+    "server": "pnpm --filter server"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "typescript-eslint": "^7.8.0"
+  }
+}
