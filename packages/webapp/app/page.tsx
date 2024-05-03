@@ -1,8 +1,11 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 import { Button } from "@thantko/ui";
+import { trpc } from "./trpc";
 
-export default function Home() {
+export default async function Home() {
+  const users = await trpc.user.list.query();
+  console.log(users);
   return (
     <main className={styles.main}>
       <div className={styles.description}>

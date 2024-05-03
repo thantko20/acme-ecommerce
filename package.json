@@ -7,12 +7,16 @@
     "format": "prettier --write .",
     "ui": "pnpm --filter ui",
     "webapp": "pnpm --filter webapp",
-    "server": "pnpm --filter server"
+    "server": "pnpm --filter server",
+    "dev:webapp": "pnpm webapp dev",
+    "dev:server": "pnpm run server dev",
+    "dev": "concurrently --names \"App,Server\" -c \"red.bold,green.bold\" \"pnpm:server dev\" \"pnpm:webapp dev\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "concurrently": "^8.2.2",
     "prettier": "^3.2.5",
     "typescript-eslint": "^7.8.0"
   }
