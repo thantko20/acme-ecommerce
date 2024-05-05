@@ -13,7 +13,7 @@ export const routeLinks: Array<RouteLink> = [
     icon: Home,
   },
   {
-    to: "/",
+    to: "/orders",
     label: "Orders",
     icon: ShoppingCart,
     rightSection: (
@@ -28,12 +28,12 @@ export const routeLinks: Array<RouteLink> = [
     icon: Package,
   },
   {
-    to: "/",
+    to: "/customers",
     label: "Customers",
     icon: Users,
   },
   {
-    to: "/test",
+    to: "/analytics",
     label: "Analytics",
     icon: LineChart,
   },

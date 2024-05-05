@@ -16,6 +16,9 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as MainImport } from './routes/_main'
 import { Route as MainTestImport } from './routes/_main/test'
 import { Route as MainProductsImport } from './routes/_main/products'
+import { Route as MainOrdersImport } from './routes/_main/orders'
+import { Route as MainCustomersImport } from './routes/_main/customers'
+import { Route as MainAnalyticsImport } from './routes/_main/analytics'
 
 // Create Virtual Routes
 
@@ -49,6 +52,21 @@ const MainProductsRoute = MainProductsImport.update({
   getParentRoute: () => MainRoute,
 } as any)
 
+const MainOrdersRoute = MainOrdersImport.update({
+  path: '/orders',
+  getParentRoute: () => MainRoute,
+} as any)
+
+const MainCustomersRoute = MainCustomersImport.update({
+  path: '/customers',
+  getParentRoute: () => MainRoute,
+} as any)
+
+const MainAnalyticsRoute = MainAnalyticsImport.update({
+  path: '/analytics',
+  getParentRoute: () => MainRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -56,6 +74,18 @@ declare module '@tanstack/react-router' {
     '/_main': {
       preLoaderRoute: typeof MainImport
       parentRoute: typeof rootRoute
+    }
+    '/_main/analytics': {
+      preLoaderRoute: typeof MainAnalyticsImport
+      parentRoute: typeof MainImport
+    }
+    '/_main/customers': {
+      preLoaderRoute: typeof MainCustomersImport
+      parentRoute: typeof MainImport
+    }
+    '/_main/orders': {
+      preLoaderRoute: typeof MainOrdersImport
+      parentRoute: typeof MainImport
     }
     '/_main/products': {
       preLoaderRoute: typeof MainProductsImport
@@ -80,6 +110,9 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   MainRoute.addChildren([
+    MainAnalyticsRoute,
+    MainCustomersRoute,
+    MainOrdersRoute,
     MainProductsRoute,
     MainTestRoute,
     MainAboutLazyRoute,
