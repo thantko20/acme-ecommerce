@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { trpc } from "../lib/trpc";
+import { trpc } from "../../lib/trpc";
 
-export const Route = createFileRoute("/test")({
+export const Route = createFileRoute("/_main/test")({
   component: () => (
     <>
       <DisplayData />
