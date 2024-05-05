@@ -1,5 +1,5 @@
 {
-  "name": "ts-monorepo",
+  "name": "acme-ecommerce-project",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,9 +8,11 @@
     "ui": "pnpm --filter ui",
     "webapp": "pnpm --filter webapp",
     "server": "pnpm --filter server",
+    "admin": "pnpm --filter admin",
     "dev:webapp": "pnpm webapp dev",
     "dev:server": "pnpm run server dev",
-    "dev": "concurrently --names \"Server,App\" -c \"red.bold,green.bold\" \"pnpm:server dev\" \"pnpm:webapp dev\""
+    "dev:admin": "pnpm admin dev",
+    "dev": "concurrently --names \"Server,App,Admin\" -c \"red.bold,green.bold,blue.bold\" \"pnpm:server dev\" \"pnpm:webapp dev\" \"pnpm:admin dev\""
   },
   "keywords": [],
   "author": "",
