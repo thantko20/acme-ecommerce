@@ -15,6 +15,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRoute } from './routes/__root'
 import { Route as MainImport } from './routes/_main'
 import { Route as MainTestImport } from './routes/_main/test'
+import { Route as MainProductsImport } from './routes/_main/products'
 
 // Create Virtual Routes
 
@@ -43,6 +44,11 @@ const MainTestRoute = MainTestImport.update({
   getParentRoute: () => MainRoute,
 } as any)
 
+const MainProductsRoute = MainProductsImport.update({
+  path: '/products',
+  getParentRoute: () => MainRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -50,6 +56,10 @@ declare module '@tanstack/react-router' {
     '/_main': {
       preLoaderRoute: typeof MainImport
       parentRoute: typeof rootRoute
+    }
+    '/_main/products': {
+      preLoaderRoute: typeof MainProductsImport
+      parentRoute: typeof MainImport
     }
     '/_main/test': {
       preLoaderRoute: typeof MainTestImport
@@ -70,6 +80,7 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   MainRoute.addChildren([
+    MainProductsRoute,
     MainTestRoute,
     MainAboutLazyRoute,
     MainIndexLazyRoute,

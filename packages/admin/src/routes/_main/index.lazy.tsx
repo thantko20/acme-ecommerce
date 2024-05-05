@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/_main/")({
@@ -5,5 +6,5 @@ export const Route = createLazyFileRoute("/_main/")({
 });
 
 function Index() {
-  return <div>Hello /!</div>;
+  return <Button>Click!</Button>;
 }
