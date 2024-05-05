@@ -1,25 +1,16 @@
-import { EventEmitter } from "events";
-import { initTRPC, TRPCError } from "@trpc/server";
+import { PrismaClient } from "@prisma/client";
+import { initTRPC } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
-import { z } from "zod";
 
 export const createContext = ({
   req,
   res,
 }: trpcExpress.CreateExpressContextOptions) => {
-  const getUser = () => {
-    if (req.headers.authorization !== "secret") {
-      return null;
-    }
-    return {
-      name: "alex",
-    };
-  };
-
+  const prisma = new PrismaClient();
   return {
     req,
     res,
-    user: getUser(),
+    prisma,
   };
 };
 type Context = Awaited<ReturnType<typeof createContext>>;

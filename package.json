@@ -10,7 +10,7 @@
     "server": "pnpm --filter server",
     "dev:webapp": "pnpm webapp dev",
     "dev:server": "pnpm run server dev",
-    "dev": "concurrently --names \"App,Server\" -c \"red.bold,green.bold\" \"pnpm:server dev\" \"pnpm:webapp dev\""
+    "dev": "concurrently --names \"Server,App\" -c \"red.bold,green.bold\" \"pnpm:server dev\" \"pnpm:webapp dev\""
   },
   "keywords": [],
   "author": "",
