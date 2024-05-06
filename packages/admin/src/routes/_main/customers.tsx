@@ -8,18 +8,18 @@ export const Route = createFileRoute("/_main/customers")({
     </>
   ),
   loader: async () => {
-    return trpc.user.list.query();
+    return trpc.user.listCustomers.query();
   },
   gcTime: 10000,
   staleTime: 5000,
 });
 
 function DisplayData() {
-  const users = Route.useLoaderData();
+  const customers = Route.useLoaderData();
   return (
     <>
-      {users.map((user) => (
-        <p key={user.email}>{user.name}</p>
+      {customers.map((customer) => (
+        <p key={customer.id}>{customer.name}</p>
       ))}
     </>
   );

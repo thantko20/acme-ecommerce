@@ -1,11 +1,10 @@
 import { publicProcedure, router } from "../trpc";
 
 export const usersRouter = router({
-  list: publicProcedure.query(async ({ ctx }) => {
-    console.log(ctx.req.headers.authorization);
+  listCustomers: publicProcedure.query(async ({ ctx }) => {
     const prisma = ctx.prisma;
 
-    return prisma.user.findMany();
+    return prisma.user.findMany({ where: { role: "USER" } });
   }),
   create: publicProcedure.mutation(async ({ ctx }) => {
     const user = await ctx.prisma.user.create({

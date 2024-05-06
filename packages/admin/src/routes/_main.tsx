@@ -1,11 +1,33 @@
-import { Outlet, createFileRoute, Link } from "@tanstack/react-router";
+import {
+  Outlet,
+  createFileRoute,
+  Link,
+  redirect,
+} from "@tanstack/react-router";
 import { Package2 } from "lucide-react";
 
 import { NavLink } from "@/components/nav-link";
 import { Header } from "@/components/header";
 import { routeLinks } from "@/lib/route-links-constants";
+import { trpc } from "@/lib/trpc";
 
 export const Route = createFileRoute("/_main")({
+  beforeLoad: async () => {
+    let hasFirstAdmin = true;
+    const hasFirstAdminLS = localStorage.getItem("has-first-admin");
+
+    if (hasFirstAdminLS !== "true") {
+      const { hasAdmin } = await trpc.auth.checkForFirstAdmin.query();
+      hasFirstAdmin = hasAdmin;
+    }
+
+    if (!hasFirstAdmin) {
+      throw redirect({
+        to: "/auth/login",
+      });
+    }
+    localStorage.setItem("has-first-admin", "true");
+  },
   component: Layout,
 });
 

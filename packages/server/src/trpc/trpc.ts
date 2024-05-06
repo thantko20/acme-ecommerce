@@ -1,12 +1,11 @@
-import { PrismaClient } from "@prisma/client";
 import { initTRPC } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
+import { prisma } from "../prisma";
 
 export const createContext = ({
   req,
   res,
 }: trpcExpress.CreateExpressContextOptions) => {
-  const prisma = new PrismaClient();
   return {
     req,
     res,
