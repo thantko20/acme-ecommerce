@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_main")({
 
     if (!hasFirstAdmin) {
       throw redirect({
-        to: "/auth/login",
+        to: "/auth/register",
       });
     }
     localStorage.setItem("has-first-admin", "true");

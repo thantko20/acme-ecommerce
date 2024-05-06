@@ -112,11 +112,20 @@ importers:
         specifier: ^5.2.0
         version: 5.2.11(@types/node@20.12.8)(sugarss@4.0.1(postcss@8.4.38))
 
+  packages/common:
+    devDependencies:
+      zod:
+        specifier: ^3.23.6
+        version: 3.23.6
+
   packages/server:
     dependencies:
       '@prisma/client':
         specifier: ^5.13.0
         version: 5.13.0
+      '@thantko/common':
+        specifier: workspace:*
+        version: link:../common
       '@trpc/server':
         specifier: 11.0.0-rc.364
         version: 11.0.0-rc.364

@@ -1,7 +1,7 @@
-import { z } from "zod";
 import { publicProcedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import bcrypt from "bcrypt";
+import { registerSchema } from "@thantko/common/validations";
 
 export const authRouter = router({
   checkForFirstAdmin: publicProcedure.query(async ({ ctx }) => {
@@ -10,19 +10,7 @@ export const authRouter = router({
     return { hasAdmin: Boolean(admin) };
   }),
   registerAdmin: publicProcedure
-    .input(
-      z
-        .object({
-          name: z.string(),
-          email: z.string().email(),
-          password: z.string(),
-          confirmPassword: z.string(),
-        })
-        .refine(
-          ({ password, confirmPassword }) => password === confirmPassword,
-          "Passwords do not match",
-        ),
-    )
+    .input(registerSchema)
     .mutation(async ({ ctx, input }) => {
       const { email, name, password } = input;
       const emailExists = await ctx.prisma.user.findUnique({

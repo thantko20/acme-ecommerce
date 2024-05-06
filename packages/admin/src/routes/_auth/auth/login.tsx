@@ -16,14 +16,14 @@ export const Route = createFileRoute("/_auth/auth/login")({
   component: () => <LoginForm />,
 });
 
-export function LoginForm() {
+function LoginForm() {
   return (
-    <div>
+    <div className="w-full max-w-md">
       <div className="flex flex-col items-center gap-4">
         <Package2 className="size-10" />
         <h3 className="text-2xl font-bold">Acme Inc</h3>
       </div>
-      <Card className="w-full max-w-md mt-4">
+      <Card className="w-full mt-4">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>

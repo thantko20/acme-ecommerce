@@ -11,7 +11,7 @@
     "admin": "pnpm --filter admin",
     "dev:webapp": "pnpm webapp dev",
     "dev:server": "pnpm run server dev",
-    "dev:admin": "pnpm admin dev",
+    "dev:admin": "concurrently --names \"Admin,Server\" -c \"blue.bold,red.bold\" \"pnpm:admin dev\" \"pnpm:server dev\"",
     "dev": "concurrently --names \"Server,App,Admin\" -c \"red.bold,green.bold,blue.bold\" \"pnpm:server dev\" \"pnpm:webapp dev\" \"pnpm:admin dev\"",
     "prisma:studio": "pnpm run server prisma:studio"
   },
