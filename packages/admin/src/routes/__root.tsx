@@ -1,4 +1,5 @@
-import { createRootRoute, Outlet } from "@tanstack/react-router";
+import { trpc } from "@/lib/trpc";
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
 
 const TanStackRouterDevtools =
@@ -10,7 +11,9 @@ const TanStackRouterDevtools =
       })),
     );
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<{
+  client: ReturnType<typeof trpc.useUtils>["client"];
+}>()({
   component: () => (
     <>
       <Outlet />

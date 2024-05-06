@@ -1,10 +1,11 @@
 import { z } from "zod";
+import { passwordSchema } from "./helpers";
 
 export const registerSchema = z
   .object({
     name: z.string(),
     email: z.string().email(),
-    password: z.string(),
+    password: passwordSchema,
     confirmPassword: z.string(),
   })
   .refine(
@@ -13,3 +14,10 @@ export const registerSchema = z
   );
 
 export type RegisterSchema = z.infer<typeof registerSchema>;
+
+export const loginSchema = z.object({
+  email: z.string().email(),
+  password: passwordSchema,
+});
+
+export type LoginSchema = z.infer<typeof loginSchema>;

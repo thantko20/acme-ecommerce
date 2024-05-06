@@ -9,15 +9,14 @@ import { Package2 } from "lucide-react";
 import { NavLink } from "@/components/nav-link";
 import { Header } from "@/components/header";
 import { routeLinks } from "@/lib/route-links-constants";
-import { trpc } from "@/lib/trpc";
 
 export const Route = createFileRoute("/_main")({
-  beforeLoad: async () => {
+  beforeLoad: async ({ context }) => {
     let hasFirstAdmin = true;
     const hasFirstAdminLS = localStorage.getItem("has-first-admin");
 
     if (hasFirstAdminLS !== "true") {
-      const { hasAdmin } = await trpc.auth.checkForFirstAdmin.query();
+      const { hasAdmin } = await context.client.auth.checkForFirstAdmin.query();
       hasFirstAdmin = hasAdmin;
     }
 

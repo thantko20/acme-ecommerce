@@ -1,7 +1,7 @@
 import { publicProcedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import bcrypt from "bcrypt";
-import { registerSchema } from "@thantko/common/validations";
+import { loginSchema, registerSchema } from "@thantko/common/validations";
 
 export const authRouter = router({
   checkForFirstAdmin: publicProcedure.query(async ({ ctx }) => {
@@ -39,5 +39,27 @@ export const authRouter = router({
           salt: true,
         },
       });
+    }),
+
+  loginAdmin: publicProcedure
+    .input(loginSchema)
+    .mutation(async ({ ctx, input }) => {
+      const admin = await ctx.prisma.user.findUnique({
+        where: { email: input.email, role: "ADMIN" },
+      });
+      if (!admin) {
+        throw new TRPCError({
+          message: "Invalid credentials.",
+          code: "BAD_REQUEST",
+        });
+      }
+
+      const isValidPw = await bcrypt.compare(input.password, admin.password);
+      if (!isValidPw) {
+        throw new TRPCError({
+          message: "Invalid credentials.",
+          code: "BAD_REQUEST",
+        });
+      }
     }),
 });

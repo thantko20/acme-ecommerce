@@ -9,57 +9,84 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { createFileRoute } from "@tanstack/react-router";
-import { Package2 } from "lucide-react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { trpc } from "@/lib/trpc";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { registerSchema } from "@thantko/common/validations";
 
 export const Route = createFileRoute("/_auth/auth/register")({
   component: () => <Register />,
 });
 
 function Register() {
+  const form = useForm({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      email: "",
+      name: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const registerMutation = trpc.auth.registerAdmin.useMutation();
+
+  const navigate = useNavigate();
   return (
-    <div className="w-full max-w-md">
-      <div className="flex flex-col items-center gap-4">
-        <Package2 className="size-10" />
-        <h3 className="text-2xl font-bold">Acme Inc</h3>
-      </div>
-      <Card className="w-full mt-4">
-        <CardHeader>
-          <CardTitle className="text-2xl">Register</CardTitle>
-          <CardDescription>
-            Welcome! You have to register to use this panel.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="name">Name</Label>
-            <Input id="name" type="text" placeholder="John Doe" required />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <p className="text-muted-foreground text-xs">
-              Email will be used to login to your account.
-            </p>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" required />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="confirmPassword">Confirm Password</Label>
-            <Input id="confirmPassword" type="password" required />
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button className="w-full">Register</Button>
-        </CardFooter>
-      </Card>
-    </div>
+    <Card className="w-full mt-4">
+      <CardHeader>
+        <CardTitle className="text-2xl">Register</CardTitle>
+        <CardDescription>
+          Welcome! You have to register to use this panel.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="name">Name</Label>
+          <Input
+            type="text"
+            placeholder="John Doe"
+            {...form.register("name")}
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="email">Email</Label>
+          <p className="text-muted-foreground text-xs">
+            Email will be used to login to your account.
+          </p>
+          <Input
+            type="email"
+            placeholder="m@example.com"
+            {...form.register("email")}
+          />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="password">Password</Label>
+          <Input type="password" {...form.register("password")} />
+        </div>
+        <div className="grid gap-2">
+          <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <Input type="password" {...form.register("confirmPassword")} />
+        </div>
+      </CardContent>
+      <CardFooter>
+        <Button
+          className="w-full"
+          onClick={async () => {
+            if (await form.trigger()) {
+              registerMutation.mutate(form.getValues(), {
+                onSuccess: () => {
+                  navigate({ to: "/auth/login" });
+                },
+                onError: console.log,
+              });
+            }
+          }}
+        >
+          {registerMutation.isPending ? "Loading" : "Register"}
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }

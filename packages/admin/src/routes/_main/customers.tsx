@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { trpc } from "../../lib/trpc";
 
 export const Route = createFileRoute("/_main/customers")({
   component: () => (
@@ -7,8 +6,8 @@ export const Route = createFileRoute("/_main/customers")({
       <DisplayData />
     </>
   ),
-  loader: async () => {
-    return trpc.user.listCustomers.query();
+  loader: async ({ context }) => {
+    return context.client.user.listCustomers.query();
   },
   gcTime: 10000,
   staleTime: 5000,

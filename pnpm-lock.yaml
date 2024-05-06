@@ -20,6 +20,9 @@ importers:
 
   packages/admin:
     dependencies:
+      '@hookform/resolvers':
+        specifier: ^3.3.4
+        version: 3.3.4(react-hook-form@7.51.4(react@18.3.1))
       '@radix-ui/react-dialog':
         specifier: ^1.0.5
         version: 1.0.5(@types/react-dom@18.3.0)(@types/react@18.3.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -35,12 +38,21 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.0.2
         version: 1.0.2(@types/react@18.3.1)(react@18.3.1)
+      '@tanstack/react-query':
+        specifier: ^5.35.1
+        version: 5.35.1(react@18.3.1)
       '@tanstack/react-router':
         specifier: ^1.31.19
         version: 1.31.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@thantko/common':
+        specifier: workspace:*
+        version: link:../common
       '@trpc/client':
         specifier: 11.0.0-rc.364
         version: 11.0.0-rc.364(@trpc/server@11.0.0-rc.364)
+      '@trpc/react-query':
+        specifier: 11.0.0-rc.364
+        version: 11.0.0-rc.364(@tanstack/react-query@5.35.1(react@18.3.1))(@trpc/client@11.0.0-rc.364(@trpc/server@11.0.0-rc.364))(@trpc/server@11.0.0-rc.364)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -56,6 +68,9 @@ importers:
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
+      react-hook-form:
+        specifier: ^7.51.4
+        version: 7.51.4(react@18.3.1)
       tailwind-merge:
         specifier: ^2.3.0
         version: 2.3.0
@@ -592,6 +607,11 @@ packages:
 
   '@floating-ui/utils@0.2.2':
     resolution: {integrity: sha512-J4yDIIthosAsRZ5CPYP/jQvUAQtlZTTD/4suA08/FEnlxqW3sKS9iAhgsa9VYLZ6vDHn/ixJgIqRQPotoBjxIw==}
+
+  '@hookform/resolvers@3.3.4':
+    resolution: {integrity: sha512-o5cgpGOuJYrd+iMKvkttOclgwRW86EsWJZZRC23prf0uU2i48Htq4PuT73AVb9ionFyZrwYEITuOFGF+BydEtQ==}
+    peerDependencies:
+      react-hook-form: ^7.0.0
 
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
@@ -1391,6 +1411,14 @@ packages:
     resolution: {integrity: sha512-rahAZXlR879P7dngDH7BZwGYiODA9D5Hqo6nUHn9GAURcqZU5IW0ZiT54dPtV5EPES7muZZmknReYueDHs7FFQ==}
     engines: {node: '>=12'}
 
+  '@tanstack/query-core@5.35.1':
+    resolution: {integrity: sha512-0Dnpybqb8+ps6WgqBnqFEC+1F/xLvUosRAq+wiGisTgolOZzqZfkE2995dEXmhuzINiTM7/a6xSGznU0NIvBkw==}
+
+  '@tanstack/react-query@5.35.1':
+    resolution: {integrity: sha512-i2T7m2ffQdNqlX3pO+uMsnQ0H4a59Ens2GxtlMsRiOvdSB4SfYmHb27MnvFV8rGmtWRaa4gPli0/rpDoSS5LbQ==}
+    peerDependencies:
+      react: ^18.0.0
+
   '@tanstack/react-router@1.31.19':
     resolution: {integrity: sha512-WSN5rmB24AhvCfHs9R5LCbXAym1OGFBZHw11VoS1nDZkY+aaH1AjYNm3l/bPH8wC3bJRV2WXKyPTxywjrWPQMQ==}
     engines: {node: '>=12'}
@@ -1426,6 +1454,15 @@ packages:
     resolution: {integrity: sha512-k9ZH7I0OOBFME9fZJ1JI0ZjvPEV64bvoT20kWHkFeMH5trJmK1tzcc/q7c7cLBY4pziLPqBDPFw2qax09vyRTg==}
     peerDependencies:
       '@trpc/server': 11.0.0-rc.364+d95fb467b
+
+  '@trpc/react-query@11.0.0-rc.364':
+    resolution: {integrity: sha512-updB1uOVHS/1NK+hclt8OK/Im0GYD8mIRTxs96hZhfaT6tqUhij/wWWG0U6OofxPGC/MZs75ojQeq8Uag9Tr5g==}
+    peerDependencies:
+      '@tanstack/react-query': ^5.25.0
+      '@trpc/client': 11.0.0-rc.364+d95fb467b
+      '@trpc/server': 11.0.0-rc.364+d95fb467b
+      react: '>=18.2.0'
+      react-dom: '>=18.2.0'
 
   '@trpc/server@11.0.0-rc.364':
     resolution: {integrity: sha512-sGlrb2jSCiU74TrJ+N+WxIcJIUDyo0WOy0y30vIArw6oHFXjeithgxjvIu+PbN+VWt/Gt4ee8kVhnmxCW4X/Qw==}
@@ -2586,6 +2623,12 @@ packages:
     peerDependencies:
       react: ^18.3.1
 
+  react-hook-form@7.51.4:
+    resolution: {integrity: sha512-V14i8SEkh+V1gs6YtD0hdHYnoL4tp/HX/A45wWQN15CYr9bFRmmRdYStSO5L65lCCZRF+kYiSKhm9alqbcdiVA==}
+    engines: {node: '>=12.22.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18
+
   react-refresh@0.14.2:
     resolution: {integrity: sha512-jCvmsr+1IUSMUyzOkRcvnVbX3ZYC6g9TDrDbFuFmRDq7PD4yaGbLKNQL6k2jnArV8hjYxh7hVhAZB6s9HDGpZA==}
     engines: {node: '>=0.10.0'}
@@ -3369,6 +3412,10 @@ snapshots:
       react-dom: 18.3.1(react@18.3.1)
 
   '@floating-ui/utils@0.2.2': {}
+
+  '@hookform/resolvers@3.3.4(react-hook-form@7.51.4(react@18.3.1))':
+    dependencies:
+      react-hook-form: 7.51.4(react@18.3.1)
 
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
@@ -4227,6 +4274,13 @@ snapshots:
 
   '@tanstack/history@1.31.16': {}
 
+  '@tanstack/query-core@5.35.1': {}
+
+  '@tanstack/react-query@5.35.1(react@18.3.1)':
+    dependencies:
+      '@tanstack/query-core': 5.35.1
+      react: 18.3.1
+
   '@tanstack/react-router@1.31.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tanstack/history': 1.31.16
@@ -4286,6 +4340,14 @@ snapshots:
   '@trpc/client@11.0.0-rc.364(@trpc/server@11.0.0-rc.364)':
     dependencies:
       '@trpc/server': 11.0.0-rc.364
+
+  '@trpc/react-query@11.0.0-rc.364(@tanstack/react-query@5.35.1(react@18.3.1))(@trpc/client@11.0.0-rc.364(@trpc/server@11.0.0-rc.364))(@trpc/server@11.0.0-rc.364)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@tanstack/react-query': 5.35.1(react@18.3.1)
+      '@trpc/client': 11.0.0-rc.364(@trpc/server@11.0.0-rc.364)
+      '@trpc/server': 11.0.0-rc.364
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
   '@trpc/server@11.0.0-rc.364': {}
 
@@ -5501,6 +5563,10 @@ snapshots:
       loose-envify: 1.4.0
       react: 18.3.1
       scheduler: 0.23.2
+
+  react-hook-form@7.51.4(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   react-refresh@0.14.2: {}
 
