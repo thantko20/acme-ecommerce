@@ -35,11 +35,11 @@ export const AuthStoreProvider = ({ children }: { children: ReactNode }) => {
   const client = trpc.useUtils().client;
 
   useEffect(() => {
-    client.auth.me
+    client.auth.adminMe
       .query()
       .then((data) => store.getState().actions.onLoggedIn(data.user))
       .catch(() => store.getState().actions.onLoggedOut());
-  }, [client.auth.me, store]);
+  }, [client.auth.adminMe, store]);
 
   return (
     <authStoreContext.Provider value={store}>

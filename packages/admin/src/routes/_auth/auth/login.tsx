@@ -14,12 +14,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema, loginSchema } from "@thantko/common/validations";
 import { trpc } from "@/lib/trpc";
+import { useAuthStore } from "@/components/auth-provider";
+import { sleep } from "@thantko/common/utils";
 
 export const Route = createFileRoute("/_auth/auth/login")({
   component: () => <LoginForm />,
 });
 
 function LoginForm() {
+  const authStore = useAuthStore();
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
   });
@@ -29,7 +32,11 @@ function LoginForm() {
   const loginMutation = trpc.auth.loginAdmin.useMutation();
   const onSubmit = form.handleSubmit((data) => {
     loginMutation.mutate(data, {
-      onSuccess: () => {
+      onSuccess: async (result) => {
+        authStore.actions.onLoggedIn(result.user);
+
+        // because state was updated after navigation
+        await sleep(0);
         navigate({ to: "/" });
       },
       onError: console.log,

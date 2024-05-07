@@ -79,10 +79,13 @@ export const authRouter = router({
       const { password: _pw, salt: _salt, ...user } = admin;
       const token = await signJwt({ user, type: roles.ADMIN });
       ctx.res.cookie("token", token);
-      return { token };
+      return { token, user };
     }),
+  logoutAdmin: publicProcedure.mutation(async ({ ctx }) => {
+    ctx.res.clearCookie("token");
+  }),
 
-  me: adminProcedure.query(async ({ ctx }) => {
+  adminMe: adminProcedure.query(async ({ ctx }) => {
     return { user: ctx.user };
   }),
 });

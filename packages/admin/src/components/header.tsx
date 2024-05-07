@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { NavLink } from "./nav-link";
 import { Button } from "./ui/button";
 import {
@@ -13,8 +13,13 @@ import { Input } from "./ui/input";
 import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet";
 import { Menu, Package2, Search, CircleUser } from "lucide-react";
 import { routeLinks } from "@/lib/route-links-constants";
+import { useAuthStore } from "./auth-provider";
+import { trpc } from "@/lib/trpc";
 
 export const Header = () => {
+  const { user, actions } = useAuthStore();
+  const logoutMutation = trpc.auth.logoutAdmin.useMutation();
+  const navigate = useNavigate();
   return (
     <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
       <Sheet>
@@ -59,12 +64,25 @@ export const Header = () => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          {user ?
+            <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+          : null}
           <DropdownMenuSeparator />
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => {
+              logoutMutation.mutate(undefined, {
+                onSuccess: () => {
+                  actions.onLoggedOut();
+                  navigate({ to: "/auth/login" });
+                },
+              });
+            }}
+          >
+            Logout
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>
