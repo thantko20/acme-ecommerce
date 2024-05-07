@@ -2,6 +2,16 @@ import { publicProcedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import bcrypt from "bcrypt";
 import { loginSchema, registerSchema } from "@thantko/common/validations";
+import { JwtPayload, roles } from "@thantko/common/types";
+import jwt from "jsonwebtoken";
+
+const signJwt = (payload: JwtPayload): Promise<string> =>
+  new Promise((resolve, reject) =>
+    jwt.sign(payload, "secret", (error, encoded) => {
+      if (error) return reject(error);
+      resolve(encoded as string);
+    }),
+  );
 
 export const authRouter = router({
   checkForFirstAdmin: publicProcedure.query(async ({ ctx }) => {
@@ -61,5 +71,9 @@ export const authRouter = router({
           code: "BAD_REQUEST",
         });
       }
+      const { password: _pw, salt: _salt, ...user } = admin;
+      const token = await signJwt({ user, type: roles.ADMIN });
+      ctx.res.cookie("token", token);
+      return { token };
     }),
 });

@@ -8,6 +8,9 @@ export const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
       url: "http://localhost:8080/trpc",
+      fetch(url, opts) {
+        return window.fetch(url, { ...opts, credentials: "include" });
+      },
     }),
   ],
 });
