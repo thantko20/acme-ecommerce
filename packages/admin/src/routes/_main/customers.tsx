@@ -7,10 +7,8 @@ export const Route = createFileRoute("/_main/customers")({
     </>
   ),
   loader: async ({ context }) => {
-    return context.client.user.listCustomers.query();
+    return context.client.user.listCustomers.query({ limit: 10, page: 1 });
   },
-  gcTime: 10000,
-  staleTime: 5000,
 });
 
 function DisplayData() {

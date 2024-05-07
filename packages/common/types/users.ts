@@ -9,6 +9,7 @@ export type UserSensitive = BaseModel & {
   email: string;
   password: string;
   salt: string;
+  role: Role;
 };
 
 export type User = Omit<UserSensitive, "password" | "salt">;

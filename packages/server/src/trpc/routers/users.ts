@@ -1,20 +1,25 @@
-import { publicProcedure, router } from "../trpc";
+import { roles } from "@thantko/common/types";
+import { adminProcedure, router } from "../trpc";
+import { getUsersSchema } from "@thantko/common/validations";
+import { Prisma } from "@prisma/client";
 
 export const usersRouter = router({
-  listCustomers: publicProcedure.query(async ({ ctx }) => {
-    console.log(ctx.req.cookies.token);
-    const prisma = ctx.prisma;
+  listCustomers: adminProcedure
+    .input(getUsersSchema)
+    .query(async ({ ctx, input }) => {
+      const { limit, name, page } = input;
+      const where: Prisma.UserWhereInput = { role: roles.USER };
+      if (name) {
+        where.name = {
+          contains: name,
+        };
+      }
+      const prisma = ctx.prisma;
 
-    return prisma.user.findMany({ where: { role: "USER" } });
-  }),
-  create: publicProcedure.mutation(async ({ ctx }) => {
-    const user = await ctx.prisma.user.create({
-      data: {
-        email: "smilenwesoe@gmail.com",
-        name: "Han Nwe Soe",
-      },
-    });
-    console.log("User created");
-    return user;
-  }),
+      return prisma.user.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+      });
+    }),
 });
