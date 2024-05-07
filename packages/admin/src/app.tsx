@@ -8,10 +8,11 @@ import { routeTree } from "./routeTree.gen";
 import "./index.css";
 import { queryClient } from "./lib/react-query";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { AuthStoreProvider, useAuthStore } from "./components/auth-provider";
 
 const router = createRouter({
   routeTree,
-  context: { client: undefined!, user: null },
+  context: { client: undefined!, authStore: undefined!, user: undefined! },
 });
 
 declare module "@tanstack/react-router" {
@@ -29,7 +30,9 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
-          <App />
+          <AuthStoreProvider initialUser={null}>
+            <App />
+          </AuthStoreProvider>
         </QueryClientProvider>
       </trpc.Provider>
     </StrictMode>,
@@ -39,6 +42,7 @@ if (!rootElement.innerHTML) {
 // eslint-disable-next-line react-refresh/only-export-components
 function App() {
   const client = trpc.useUtils().client;
+  const authStore = useAuthStore();
 
-  return <RouterProvider router={router} context={{ client }} />;
+  return <RouterProvider router={router} context={{ client, authStore }} />;
 }

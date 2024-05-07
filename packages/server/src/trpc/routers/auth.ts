@@ -1,4 +1,9 @@
-import { publicProcedure, router } from "../trpc";
+import {
+  adminProcedure,
+  authedProcuedure,
+  publicProcedure,
+  router,
+} from "../trpc";
 import { TRPCError } from "@trpc/server";
 import bcrypt from "bcrypt";
 import { loginSchema, registerSchema } from "@thantko/common/validations";
@@ -76,4 +81,8 @@ export const authRouter = router({
       ctx.res.cookie("token", token);
       return { token };
     }),
+
+  me: adminProcedure.query(async ({ ctx }) => {
+    return { user: ctx.user };
+  }),
 });

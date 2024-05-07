@@ -14,7 +14,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginSchema, loginSchema } from "@thantko/common/validations";
 import { trpc } from "@/lib/trpc";
-import { useEffect } from "react";
 
 export const Route = createFileRoute("/_auth/auth/login")({
   component: () => <LoginForm />,
@@ -24,10 +23,6 @@ function LoginForm() {
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
   });
-
-  useEffect(() => {
-    console.log(form.formState.errors);
-  }, [form.formState.errors]);
 
   const navigate = useNavigate();
 
