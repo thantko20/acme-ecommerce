@@ -1,8 +1,13 @@
 import { trpc } from "@/lib/trpc";
-import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
+import {
+  createRootRouteWithContext,
+  Outlet,
+  redirect,
+} from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
-import { AuthStore } from "@/components/auth-provider";
-import { User } from "@thantko/common/types";
+import { useAuthStore } from "@/components/auth-provider";
+import { Route as LoginRoute } from "./_auth/auth/login";
+import { Route as RegisterRoute } from "./_auth/auth/register";
 
 const TanStackRouterDevtools =
   import.meta.env.PROD ?
@@ -15,22 +20,22 @@ const TanStackRouterDevtools =
 
 export const Route = createRootRouteWithContext<{
   client: ReturnType<typeof trpc.useUtils>["client"];
-  authStore: AuthStore;
-  user: User;
+  auth: Pick<ReturnType<typeof useAuthStore>, "user" | "isAuthenticated">;
 }>()({
   beforeLoad: async ({ context }) => {
-    let user: User | undefined = undefined;
-    try {
-      const data = await context.client.auth.me.query();
-      user = data.user;
-      context.authStore.actions.onLoggedIn(data.user);
-    } catch {
-      context.authStore.actions.onLoggedOut();
+    if (context.auth.isAuthenticated) {
+      return {
+        ...context,
+        auth: {
+          ...context.auth,
+          user: context.auth.user!,
+        },
+      };
     }
-    return {
-      ...context,
-      user,
-    };
+
+    const { hasAdmin } = await context.client.auth.checkForFirstAdmin.query();
+    const to = hasAdmin ? LoginRoute.fullPath : RegisterRoute.fullPath;
+    throw redirect({ to, from: "/" });
   },
   component: () => (
     <>
@@ -39,10 +44,5 @@ export const Route = createRootRouteWithContext<{
         <TanStackRouterDevtools initialIsOpen={false} />
       </Suspense>
     </>
-  ),
-  pendingComponent: () => (
-    <div className="min-h-screen flex items-center justify-center">
-      <p>Checking if you're legitimate or not fr on god</p>
-    </div>
   ),
 });

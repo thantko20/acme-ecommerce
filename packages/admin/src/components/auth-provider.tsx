@@ -1,11 +1,13 @@
 /* eslint-disable react-refresh/only-export-components */
 import { User } from "@thantko/common/types";
 import { StoreApi, createStore, useStore } from "zustand";
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { ReactNode } from "@tanstack/react-router";
+import { trpc } from "@/lib/trpc";
 
 export type AuthStore = {
   user: User | null;
+  isCheckingAuth: boolean;
   actions: {
     onLoggedIn: (user: User) => void;
     onLoggedOut: () => void;
@@ -14,19 +16,14 @@ export type AuthStore = {
 
 export const authStoreContext = createContext<StoreApi<AuthStore> | null>(null);
 
-export const AuthStoreProvider = ({
-  children,
-  initialUser,
-}: {
-  children: ReactNode;
-  initialUser: User | null;
-}) => {
+export const AuthStoreProvider = ({ children }: { children: ReactNode }) => {
   const [store] = useState(() =>
     createStore<AuthStore>((set) => ({
-      user: initialUser,
+      user: null,
+      isCheckingAuth: true,
       actions: {
         onLoggedIn(user) {
-          set({ user });
+          set({ user, isCheckingAuth: false });
         },
         onLoggedOut() {
           set({ user: null });
@@ -34,6 +31,15 @@ export const AuthStoreProvider = ({
       },
     })),
   );
+
+  const client = trpc.useUtils().client;
+
+  useEffect(() => {
+    client.auth.me
+      .query()
+      .then((data) => store.getState().actions.onLoggedIn(data.user))
+      .catch(() => store.getState().actions.onLoggedOut());
+  }, [client.auth.me, store]);
 
   return (
     <authStoreContext.Provider value={store}>

@@ -12,7 +12,7 @@ import { AuthStoreProvider, useAuthStore } from "./components/auth-provider";
 
 const router = createRouter({
   routeTree,
-  context: { client: undefined!, authStore: undefined!, user: undefined! },
+  context: { client: undefined!, auth: undefined! },
 });
 
 declare module "@tanstack/react-router" {
@@ -30,7 +30,7 @@ if (!rootElement.innerHTML) {
     <StrictMode>
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
-          <AuthStoreProvider initialUser={null}>
+          <AuthStoreProvider>
             <App />
           </AuthStoreProvider>
         </QueryClientProvider>
@@ -42,7 +42,20 @@ if (!rootElement.innerHTML) {
 // eslint-disable-next-line react-refresh/only-export-components
 function App() {
   const client = trpc.useUtils().client;
-  const authStore = useAuthStore();
+  const { user, isAuthenticated, isCheckingAuth } = useAuthStore();
 
-  return <RouterProvider router={router} context={{ client, authStore }} />;
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p>We are determining whether we should accept you or not</p>
+      </div>
+    );
+  }
+
+  return (
+    <RouterProvider
+      router={router}
+      context={{ client, auth: { user, isAuthenticated } }}
+    />
+  );
 }
