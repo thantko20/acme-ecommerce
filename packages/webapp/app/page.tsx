@@ -1,6 +1,7 @@
 import { Button, Flex, Text } from "@radix-ui/themes";
-import { trpc } from "./trpc";
 import { revalidatePath } from "next/cache";
+
+import { trpc } from "./trpc";
 
 export default async function Home() {
   const users = await trpc.user.list.query();

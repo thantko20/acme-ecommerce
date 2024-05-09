@@ -1,20 +1,22 @@
 import { Link, useNavigate } from "@tanstack/react-router";
+import { CircleUser, Menu, Package2, Search } from "lucide-react";
+
+import { routeLinks } from "@/lib/route-links-constants";
+import { trpc } from "@/lib/trpc";
+
+import { useAuthStore } from "./auth-provider";
 import { NavLink } from "./nav-link";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Input } from "./ui/input";
-import { Sheet, SheetTrigger, SheetContent } from "./ui/sheet";
-import { Menu, Package2, Search, CircleUser } from "lucide-react";
-import { routeLinks } from "@/lib/route-links-constants";
-import { useAuthStore } from "./auth-provider";
-import { trpc } from "@/lib/trpc";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 
 export const Header = () => {
   const { user, actions } = useAuthStore();

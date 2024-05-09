@@ -1,8 +1,10 @@
 /* eslint-disable react-refresh/only-export-components */
-import { User } from "@thantko/common/types";
-import { StoreApi, createStore, useStore } from "zustand";
-import { createContext, useContext, useEffect, useState } from "react";
 import { ReactNode } from "@tanstack/react-router";
+import { createContext, useContext, useEffect, useState } from "react";
+import { StoreApi, createStore, useStore } from "zustand";
+
+import { User } from "@thantko/common/types";
+
 import { trpc } from "@/lib/trpc";
 
 export type AuthStore = {

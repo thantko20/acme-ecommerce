@@ -1,6 +1,7 @@
-import { Home, ShoppingCart, Package, Users, LineChart } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Home, LineChart, Package, ShoppingCart, Users } from "lucide-react";
+
 import { NavLinkProps } from "@/components/nav-link";
+import { Badge } from "@/components/ui/badge";
 
 type RouteLink = Omit<NavLinkProps, "className" | "children"> & {
   label: string;

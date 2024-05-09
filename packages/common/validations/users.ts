@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 import { paginationSchema } from "./helpers";
 
 export const getUsersSchema = paginationSchema.merge(

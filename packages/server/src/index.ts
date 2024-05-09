@@ -1,9 +1,10 @@
-import express from "express";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { appRouter } from "./trpc";
-import { createContext } from "./trpc/trpc";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import express from "express";
+
+import { appRouter } from "./trpc";
+import { createContext } from "./trpc/trpc";
 
 const app = express();
 

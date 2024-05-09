@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 import { emailSchema, passwordSchema } from "./helpers";
 
 export const registerSchema = z

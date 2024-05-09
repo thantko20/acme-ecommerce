@@ -1,14 +1,16 @@
+import { TRPCError } from "@trpc/server";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+import { JwtPayload, roles } from "@thantko/common/types";
+import { loginSchema, registerSchema } from "@thantko/common/validations";
+
 import {
   adminProcedure,
   authedProcuedure,
   publicProcedure,
   router,
 } from "../trpc";
-import { TRPCError } from "@trpc/server";
-import bcrypt from "bcrypt";
-import { loginSchema, registerSchema } from "@thantko/common/validations";
-import { JwtPayload, roles } from "@thantko/common/types";
-import jwt from "jsonwebtoken";
 
 const signJwt = (payload: JwtPayload): Promise<string> =>
   new Promise((resolve, reject) =>

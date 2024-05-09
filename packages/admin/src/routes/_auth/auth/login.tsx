@@ -1,4 +1,11 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+
+import { sleep } from "@thantko/common/utils";
+import { LoginSchema, loginSchema } from "@thantko/common/validations";
+
+import { useAuthStore } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,12 +17,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { LoginSchema, loginSchema } from "@thantko/common/validations";
 import { trpc } from "@/lib/trpc";
-import { useAuthStore } from "@/components/auth-provider";
-import { sleep } from "@thantko/common/utils";
 
 export const Route = createFileRoute("/_auth/auth/login")({
   component: () => <LoginForm />,
@@ -25,6 +27,10 @@ function LoginForm() {
   const authStore = useAuthStore();
   const form = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
   const navigate = useNavigate();

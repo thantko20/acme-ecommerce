@@ -1,7 +1,9 @@
-import { roles } from "@thantko/common/types";
-import { adminProcedure, router } from "../trpc";
-import { getUsersSchema } from "@thantko/common/validations";
 import { Prisma } from "@prisma/client";
+
+import { roles } from "@thantko/common/types";
+import { getUsersSchema } from "@thantko/common/validations";
+
+import { adminProcedure, router } from "../trpc";
 
 export const usersRouter = router({
   listCustomers: adminProcedure

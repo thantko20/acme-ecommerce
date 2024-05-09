@@ -1,8 +1,9 @@
+import { Link } from "@tanstack/react-router";
+import { LucideProps } from "lucide-react";
+import { ForwardRefExoticComponent, ReactNode, RefAttributes } from "react";
+
 import { RoutePath } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Link } from "@tanstack/react-router";
-import { ForwardRefExoticComponent, ReactNode, RefAttributes } from "react";
-import { LucideProps } from "lucide-react";
 
 export type NavLinkProps = {
   to: RoutePath;

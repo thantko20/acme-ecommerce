@@ -1,8 +1,10 @@
 import { TRPCError, initTRPC } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
-import { prisma } from "../prisma";
 import jwt from "jsonwebtoken";
+
 import { JwtPayload, User, roles } from "@thantko/common/types";
+
+import { prisma } from "../prisma";
 
 const getUser = (token: string): Promise<User | null> =>
   new Promise((resolve) => {

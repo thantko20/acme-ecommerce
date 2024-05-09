@@ -1,8 +1,8 @@
-import { Outlet, createFileRoute, Link } from "@tanstack/react-router";
+import { Link, Outlet, createFileRoute } from "@tanstack/react-router";
 import { Package2 } from "lucide-react";
 
-import { NavLink } from "@/components/nav-link";
 import { Header } from "@/components/header";
+import { NavLink } from "@/components/nav-link";
 import { routeLinks } from "@/lib/route-links-constants";
 
 export const Route = createFileRoute("/_main")({

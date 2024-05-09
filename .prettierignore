@@ -1,1 +1,14 @@
 node_modules
+
+*.yaml
+*.yml
+
+README.md
+
+routeTree.gen.ts
+
+dist
+
+build
+
+.next

@@ -1,11 +1,13 @@
-import { trpc } from "@/lib/trpc";
 import {
-  createRootRouteWithContext,
   Outlet,
+  createRootRouteWithContext,
   redirect,
 } from "@tanstack/react-router";
-import { lazy, Suspense } from "react";
+import { Suspense, lazy } from "react";
+
 import { useAuthStore } from "@/components/auth-provider";
+import { trpc } from "@/lib/trpc";
+
 import { Route as LoginRoute } from "./_auth/auth/login";
 import { Route as RegisterRoute } from "./_auth/auth/register";
 
