@@ -5,12 +5,9 @@ import jwt from "jsonwebtoken";
 import { JwtPayload, roles } from "@thantko/common/types";
 import { loginSchema, registerSchema } from "@thantko/common/validations";
 
-import {
-  adminProcedure,
-  authedProcuedure,
-  publicProcedure,
-  router,
-} from "../trpc";
+import { adminProcedure, publicProcedure, router } from "../trpc";
+
+const SALT_ROUNDS = 10;
 
 const signJwt = (payload: JwtPayload): Promise<string> =>
   new Promise((resolve, reject) =>
@@ -22,7 +19,9 @@ const signJwt = (payload: JwtPayload): Promise<string> =>
 
 export const authRouter = router({
   checkForFirstAdmin: publicProcedure.query(async ({ ctx }) => {
-    const admin = await ctx.prisma.user.findFirst({ where: { role: "ADMIN" } });
+    const admin = await ctx.prisma.user.findFirst({
+      where: { role: roles.ADMIN },
+    });
 
     return { hasAdmin: Boolean(admin) };
   }),
@@ -40,7 +39,7 @@ export const authRouter = router({
         });
       }
 
-      const salt = await bcrypt.genSalt(10);
+      const salt = await bcrypt.genSalt(SALT_ROUNDS);
       const hashedPw = await bcrypt.hash(password, salt);
 
       return ctx.prisma.user.create({
@@ -61,22 +60,21 @@ export const authRouter = router({
   loginAdmin: publicProcedure
     .input(loginSchema)
     .mutation(async ({ ctx, input }) => {
+      const loginError = new TRPCError({
+        message: "Invalid credentials.",
+        code: "BAD_REQUEST",
+      });
+
       const admin = await ctx.prisma.user.findUnique({
-        where: { email: input.email, role: "ADMIN" },
+        where: { email: input.email, role: roles.ADMIN },
       });
       if (!admin) {
-        throw new TRPCError({
-          message: "Invalid credentials.",
-          code: "BAD_REQUEST",
-        });
+        throw loginError;
       }
 
       const isValidPw = await bcrypt.compare(input.password, admin.password);
       if (!isValidPw) {
-        throw new TRPCError({
-          message: "Invalid credentials.",
-          code: "BAD_REQUEST",
-        });
+        throw loginError;
       }
       const { password: _pw, salt: _salt, ...user } = admin;
       const token = await signJwt({ user, type: roles.ADMIN });

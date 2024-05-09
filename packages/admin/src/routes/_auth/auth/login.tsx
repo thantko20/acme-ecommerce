@@ -3,7 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useForm } from "react-hook-form";
 
 import { sleep } from "@thantko/common/utils";
-import { LoginSchema, loginSchema } from "@thantko/common/validations";
+import { type LoginSchema, loginSchema } from "@thantko/common/validations";
 
 import { useAuthStore } from "@/components/auth-provider";
 import { Button } from "@/components/ui/button";
