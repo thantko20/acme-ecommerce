@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 
 import { roles } from "@thantko/common/types";
 
+import { SESSION_ID_KEY } from "../constants";
 import { prisma } from "../prisma";
 import { getSessionId } from "../utils/auth";
 
@@ -52,7 +53,7 @@ export const router = t.router;
 export const publicProcedure = t.procedure;
 export const authedProcuedure = publicProcedure.use(async ({ ctx, next }) => {
   const unauthorizedError = new TRPCError({ code: "UNAUTHORIZED" });
-  const { user, session, prisma } = ctx;
+  const { user, session, prisma, res } = ctx;
   if (!session || !user) {
     throw unauthorizedError;
   }
@@ -63,6 +64,7 @@ export const authedProcuedure = publicProcedure.use(async ({ ctx, next }) => {
         sessionId: session.sessionId,
       },
     });
+    res.clearCookie(SESSION_ID_KEY);
     throw unauthorizedError;
   }
 

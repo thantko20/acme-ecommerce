@@ -5,6 +5,7 @@ import express from "express";
 
 import "./setup-env";
 
+import { prisma } from "./prisma";
 import { appRouter } from "./trpc";
 import { createContext } from "./trpc/trpc";
 
@@ -31,5 +32,6 @@ app.get("/", (req, res) => {
 });
 
 (async function () {
+  await prisma.$connect();
   app.listen(8080, () => console.log("listening on port :8080"));
 })();
