@@ -1,21 +1,21 @@
 import { TRPCError } from "@trpc/server";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import dayjs from "dayjs";
+import crypto from "node:crypto";
 
-import { JwtPayload, roles } from "@thantko/common/types";
+import { roles } from "@thantko/common/types";
 import { loginSchema, registerSchema } from "@thantko/common/validations";
 
+import { SESSION_ID_KEY } from "../../constants";
+import { getSessionId } from "../../utils/auth";
 import { adminProcedure, publicProcedure, router } from "../trpc";
 
-const SALT_ROUNDS = 10;
+const generateToken = (size: number = 15) => {
+  const bytes = crypto.randomBytes(size);
+  return Buffer.from(bytes).toString("base64");
+};
 
-const signJwt = (payload: JwtPayload): Promise<string> =>
-  new Promise((resolve, reject) =>
-    jwt.sign(payload, "secret", (error, encoded) => {
-      if (error) return reject(error);
-      resolve(encoded as string);
-    }),
-  );
+const SALT_ROUNDS = 10;
 
 export const authRouter = router({
   checkForFirstAdmin: publicProcedure.query(async ({ ctx }) => {
@@ -48,7 +48,7 @@ export const authRouter = router({
           email,
           password: hashedPw,
           salt,
-          role: "ADMIN",
+          role: roles.ADMIN,
         },
         omit: {
           password: true,
@@ -61,7 +61,7 @@ export const authRouter = router({
     .input(loginSchema)
     .mutation(async ({ ctx, input }) => {
       const loginError = new TRPCError({
-        message: "Invalid credentials.",
+        message: "Invalid email or password.",
         code: "BAD_REQUEST",
       });
 
@@ -76,13 +76,34 @@ export const authRouter = router({
       if (!isValidPw) {
         throw loginError;
       }
+
+      const sessionId = generateToken(15);
+      const expiresAt = dayjs().add(30, "days").toDate();
+      await ctx.prisma.session.create({
+        data: {
+          expiresAt,
+          sessionId,
+          userId: admin.id,
+        },
+      });
+
       const { password: _pw, salt: _salt, ...user } = admin;
-      const token = await signJwt({ user, type: roles.ADMIN });
-      ctx.res.cookie("token", token);
-      return { token, user };
+      ctx.res.cookie("sid", sessionId, {
+        expires: expiresAt,
+        sameSite: "lax",
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+      });
+
+      return { user };
     }),
   logoutAdmin: publicProcedure.mutation(async ({ ctx }) => {
-    ctx.res.clearCookie("token");
+    await ctx.prisma.session.delete({
+      where: {
+        sessionId: getSessionId(ctx.req),
+      },
+    });
+    ctx.res.clearCookie(SESSION_ID_KEY);
   }),
 
   adminMe: adminProcedure.query(async ({ ctx }) => {

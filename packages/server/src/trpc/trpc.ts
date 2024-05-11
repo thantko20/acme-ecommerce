@@ -1,49 +1,46 @@
 import { TRPCError, initTRPC } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
-import jwt from "jsonwebtoken";
 
-import { JwtPayload, User, roles } from "@thantko/common/types";
+import { roles } from "@thantko/common/types";
 
 import { prisma } from "../prisma";
+import { getSessionId } from "../utils/auth";
 
-const getUser = (token: string): Promise<User | null> =>
-  new Promise((resolve) => {
-    jwt.verify(
-      token,
-      "secret",
-      async (error: unknown, decoded: JwtPayload | unknown) => {
-        if (error) {
-          return resolve(null);
-        }
+const getSession = async (
+  req: trpcExpress.CreateExpressContextOptions["req"],
+) => {
+  const sessionId = getSessionId(req);
+  if (!sessionId) return null;
 
-        const { user: payloadUser } = decoded as JwtPayload;
-
-        const user = await prisma.user.findUnique({
-          where: { id: payloadUser.id },
-          omit: {
-            password: true,
-            salt: true,
-          },
-        });
-        resolve(user);
+  const session = await prisma.session.findUnique({
+    relationLoadStrategy: "join",
+    where: {
+      sessionId,
+    },
+    include: {
+      user: {
+        omit: {
+          password: true,
+          salt: true,
+        },
       },
-    );
+    },
   });
+
+  return session;
+};
 
 export const createContext = async ({
   req,
   res,
 }: trpcExpress.CreateExpressContextOptions) => {
-  let user: User | null = null;
-  const token = req.cookies.token;
-  if (token) {
-    user = await getUser(token);
-  }
+  const session = await getSession(req);
   return {
     req,
     res,
     prisma,
-    user,
+    session,
+    user: session?.user || null,
   };
 };
 type Context = Awaited<ReturnType<typeof createContext>>;

@@ -3,6 +3,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
 
+import "./setup-env";
+
 import { appRouter } from "./trpc";
 import { createContext } from "./trpc/trpc";
 

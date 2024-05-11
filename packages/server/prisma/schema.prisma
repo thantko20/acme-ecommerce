@@ -9,14 +9,15 @@ generator client {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
-  email     String   @unique
-  password  String   @default("")
-  salt      String   @default("")
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at")
+  email     String    @unique
+  password  String    @default("")
+  salt      String    @default("")
   name      String
-  role      Role     @default(USER)
+  role      Role      @default(USER)
+  Session   Session[]
 
   @@map("users")
 }
@@ -24,6 +25,18 @@ model User {
 enum Role {
   USER
   ADMIN
+}
+
+model Session {
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  sessionId String @id @map("session_id")
+
+  expiresAt DateTime @map("expires_at")
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
 }
 
 model Product {

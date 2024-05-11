@@ -28,7 +28,7 @@ export const AuthStoreProvider = ({ children }: { children: ReactNode }) => {
           set({ user, isCheckingAuth: false });
         },
         onLoggedOut() {
-          set({ user: null });
+          set({ user: null, isCheckingAuth: false });
         },
       },
     })),
