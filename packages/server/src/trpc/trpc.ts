@@ -1,5 +1,6 @@
 import { TRPCError, initTRPC } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
+import dayjs from "dayjs";
 
 import { roles } from "@thantko/common/types";
 
@@ -49,15 +50,27 @@ const t = initTRPC.context<Context>().create();
 
 export const router = t.router;
 export const publicProcedure = t.procedure;
-export const authedProcuedure = publicProcedure.use(({ ctx, next }) => {
-  const { user } = ctx;
-  if (!user) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
+export const authedProcuedure = publicProcedure.use(async ({ ctx, next }) => {
+  const unauthorizedError = new TRPCError({ code: "UNAUTHORIZED" });
+  const { user, session, prisma } = ctx;
+  if (!session || !user) {
+    throw unauthorizedError;
   }
+
+  if (dayjs().isAfter(session.expiresAt)) {
+    await prisma.session.delete({
+      where: {
+        sessionId: session.sessionId,
+      },
+    });
+    throw unauthorizedError;
+  }
+
   return next({
     ctx: {
       ...ctx,
       user,
+      session,
     },
   });
 });

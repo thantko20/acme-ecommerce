@@ -7,11 +7,10 @@ import { roles } from "@thantko/common/types";
 import { loginSchema, registerSchema } from "@thantko/common/validations";
 
 import { SESSION_ID_KEY } from "../../constants";
-import { getSessionId } from "../../utils/auth";
 import { adminProcedure, publicProcedure, router } from "../trpc";
 
-const generateToken = (size: number = 15) => {
-  const bytes = crypto.randomBytes(size);
+const generateToken = (byteSize: number = 15) => {
+  const bytes = crypto.randomBytes(byteSize);
   return Buffer.from(bytes).toString("base64");
 };
 
@@ -98,11 +97,13 @@ export const authRouter = router({
       return { user };
     }),
   logoutAdmin: publicProcedure.mutation(async ({ ctx }) => {
-    await ctx.prisma.session.delete({
-      where: {
-        sessionId: getSessionId(ctx.req),
-      },
-    });
+    if (ctx.session?.sessionId) {
+      await ctx.prisma.session.delete({
+        where: {
+          sessionId: ctx.session?.sessionId,
+        },
+      });
+    }
     ctx.res.clearCookie(SESSION_ID_KEY);
   }),
 
