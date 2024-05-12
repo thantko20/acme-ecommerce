@@ -37,6 +37,8 @@ model Session {
 
   userId String @map("user_id")
   user   User   @relation(fields: [userId], references: [id])
+
+  @@map("sessions")
 }
 
 model Product {
@@ -44,9 +46,44 @@ model Product {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  name        String  @unique
-  description String  @unique
-  price       Decimal @default(0)
+  name        String @unique
+  description String
+  slug        String @unique
+  ProductSku  Sku[]
 
   @@map("products")
+}
+
+model Sku {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  sku       String @unique
+  quantity  Int    @default(0)
+  unitPrice Int    @default(0)
+
+  productId String  @map("product_id")
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@map("skus")
+}
+
+model Attribute {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name   String           @unique
+  values AttributeValue[]
+}
+
+model AttributeValue {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name        String    @unique
+  attributeId String    @map("attribute_id")
+  attribute   Attribute @relation(fields: [attributeId], references: [id])
 }
