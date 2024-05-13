@@ -46,10 +46,11 @@ model Product {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  name        String @unique
-  description String
-  slug        String @unique
-  ProductSku  Sku[]
+  name              String             @unique
+  description       String
+  slug              String             @unique
+  skus              Sku[]
+  productAttributes ProductAttribute[]
 
   @@map("products")
 }
@@ -63,8 +64,9 @@ model Sku {
   quantity  Int    @default(0)
   unitPrice Int    @default(0)
 
-  productId String  @map("product_id")
-  product   Product @relation(fields: [productId], references: [id])
+  productId       String              @map("product_id")
+  product         Product             @relation(fields: [productId], references: [id])
+  attributeValues SkuAttributeValue[]
 
   @@map("skus")
 }
@@ -74,8 +76,12 @@ model Attribute {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  name   String           @unique
-  values AttributeValue[]
+  name               String              @unique
+  values             AttributeValue[]
+  skuAttributeValues SkuAttributeValue[]
+  productAttributes  ProductAttribute[]
+
+  @@map("attributes")
 }
 
 model AttributeValue {
@@ -83,7 +89,41 @@ model AttributeValue {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  name        String    @unique
+  name               String              @unique
+  attributeId        String              @map("attribute_id")
+  attribute          Attribute           @relation(fields: [attributeId], references: [id])
+  skuAttributeValues SkuAttributeValue[]
+
+  @@map("attribute_values")
+}
+
+model SkuAttributeValue {
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  skuId String @map("sku_id")
+  sku   Sku    @relation(fields: [skuId], references: [id])
+
   attributeId String    @map("attribute_id")
   attribute   Attribute @relation(fields: [attributeId], references: [id])
+
+  valueId String         @map("value_id")
+  value   AttributeValue @relation(fields: [valueId], references: [id])
+
+  @@unique([skuId, attributeId, valueId])
+  @@map("sku_attribute_values")
+}
+
+model ProductAttribute {
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  productId String  @map("product_id")
+  product   Product @relation(fields: [productId], references: [id])
+
+  attributeId String    @map("attribute_id")
+  attribute   Attribute @relation(fields: [attributeId], references: [id])
+
+  @@unique([productId, attributeId])
+  @@map("product_attributes")
 }
