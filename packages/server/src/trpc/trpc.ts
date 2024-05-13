@@ -51,7 +51,7 @@ const t = initTRPC.context<Context>().create();
 
 export const router = t.router;
 export const publicProcedure = t.procedure;
-export const authedProcuedure = publicProcedure.use(async ({ ctx, next }) => {
+export const authedProcedure = publicProcedure.use(async ({ ctx, next }) => {
   const unauthorizedError = new TRPCError({ code: "UNAUTHORIZED" });
   const { user, session, prisma, res } = ctx;
   if (!session || !user) {
@@ -76,7 +76,7 @@ export const authedProcuedure = publicProcedure.use(async ({ ctx, next }) => {
     },
   });
 });
-export const adminProcedure = authedProcuedure.use(({ ctx, next }) => {
+export const adminProcedure = authedProcedure.use(({ ctx, next }) => {
   if (ctx.user.role !== roles.ADMIN) {
     throw new TRPCError({ code: "FORBIDDEN" });
   }
