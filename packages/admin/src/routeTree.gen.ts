@@ -19,7 +19,9 @@ import { Route as MainTestImport } from './routes/_main/test'
 import { Route as MainProductsImport } from './routes/_main/products'
 import { Route as MainOrdersImport } from './routes/_main/orders'
 import { Route as MainCustomersImport } from './routes/_main/customers'
+import { Route as MainAttributesImport } from './routes/_main/attributes'
 import { Route as MainAnalyticsImport } from './routes/_main/analytics'
+import { Route as MainAttributesAddImport } from './routes/_main/attributes_.add'
 import { Route as AuthAuthRegisterImport } from './routes/_auth/auth/register'
 import { Route as AuthAuthLoginImport } from './routes/_auth/auth/login'
 
@@ -70,8 +72,18 @@ const MainCustomersRoute = MainCustomersImport.update({
   getParentRoute: () => MainRoute,
 } as any)
 
+const MainAttributesRoute = MainAttributesImport.update({
+  path: '/attributes',
+  getParentRoute: () => MainRoute,
+} as any)
+
 const MainAnalyticsRoute = MainAnalyticsImport.update({
   path: '/analytics',
+  getParentRoute: () => MainRoute,
+} as any)
+
+const MainAttributesAddRoute = MainAttributesAddImport.update({
+  path: '/attributes/add',
   getParentRoute: () => MainRoute,
 } as any)
 
@@ -99,6 +111,10 @@ declare module '@tanstack/react-router' {
     }
     '/_main/analytics': {
       preLoaderRoute: typeof MainAnalyticsImport
+      parentRoute: typeof MainImport
+    }
+    '/_main/attributes': {
+      preLoaderRoute: typeof MainAttributesImport
       parentRoute: typeof MainImport
     }
     '/_main/customers': {
@@ -133,6 +149,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthAuthRegisterImport
       parentRoute: typeof AuthImport
     }
+    '/_main/attributes/add': {
+      preLoaderRoute: typeof MainAttributesAddImport
+      parentRoute: typeof MainImport
+    }
   }
 }
 
@@ -142,12 +162,14 @@ export const routeTree = rootRoute.addChildren([
   AuthRoute.addChildren([AuthAuthLoginRoute, AuthAuthRegisterRoute]),
   MainRoute.addChildren([
     MainAnalyticsRoute,
+    MainAttributesRoute,
     MainCustomersRoute,
     MainOrdersRoute,
     MainProductsRoute,
     MainTestRoute,
     MainAboutLazyRoute,
     MainIndexLazyRoute,
+    MainAttributesAddRoute,
   ]),
 ])
 

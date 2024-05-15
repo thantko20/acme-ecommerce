@@ -1,4 +1,11 @@
-import { Home, LineChart, Package, ShoppingCart, Users } from "lucide-react";
+import {
+  Home,
+  LineChart,
+  Package,
+  Palette,
+  ShoppingCart,
+  Users,
+} from "lucide-react";
 
 import { NavLinkProps } from "@/components/nav-link";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +34,11 @@ export const routeLinks: Array<RouteLink> = [
     to: "/products",
     label: "Products",
     icon: Package,
+  },
+  {
+    to: "/attributes",
+    label: "Attributes",
+    icon: Palette,
   },
   {
     to: "/customers",

@@ -9,7 +9,6 @@ export const usersRouter = router({
   listCustomers: adminProcedure
     .input(getUsersSchema)
     .query(async ({ ctx, input }) => {
-      console.log("it runs");
       const { limit, name, page } = input;
       const where: Prisma.UserWhereInput = { role: roles.USER };
       if (name) {
