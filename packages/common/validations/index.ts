@@ -2,3 +2,4 @@ export * from "./helpers";
 export * from "./auth";
 export * from "./users";
 export * from "./attributes";
+export * from "./products";

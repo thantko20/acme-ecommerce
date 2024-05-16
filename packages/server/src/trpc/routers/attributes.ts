@@ -4,7 +4,10 @@ import slugify from "slugify";
 import {
   createAttributeSchema,
   editAttributeSchema,
-  getAttributeByIdOrNameSchema,
+  getAttributeByIdOrSlugSchema,
+  getAttributeDetailResponseSchema,
+  getAttributesResponseSchema,
+  getAttributesSchema,
 } from "@thantko/common/validations";
 
 import { adminProcedure, publicProcedure, router } from "../trpc";
@@ -12,6 +15,7 @@ import { adminProcedure, publicProcedure, router } from "../trpc";
 export const attributesRouter = router({
   create: adminProcedure
     .input(createAttributeSchema)
+    .output(getAttributeDetailResponseSchema)
     .mutation(async ({ ctx, input }) => {
       const attributeExists = await ctx.prisma.attribute.findFirst({
         where: {
@@ -47,6 +51,7 @@ export const attributesRouter = router({
 
   edit: adminProcedure
     .input(editAttributeSchema)
+    .output(getAttributeDetailResponseSchema)
     .mutation(async ({ ctx, input }) => {
       const attributeExists = await ctx.prisma.attribute.findFirst({
         where: {
@@ -74,6 +79,16 @@ export const attributesRouter = router({
       }
 
       const data = await ctx.prisma.$transaction(async (tx) => {
+        await tx.attributeValue.deleteMany({
+          where: {
+            attributeId: input.id,
+            id: {
+              notIn: input.values
+                .filter((value) => Boolean(value.id))
+                .map((value) => value.id) as string[],
+            },
+          },
+        });
         await Promise.all(
           input.values.map((value) =>
             tx.attributeValue.upsert({
@@ -106,20 +121,24 @@ export const attributesRouter = router({
       return { data };
     }),
 
-  list: publicProcedure.query(async ({ ctx }) => {
-    const data = await ctx.prisma.attribute.findMany({
-      include: {
-        values: true,
-      },
-      orderBy: {
-        name: "asc",
-      },
-    });
-    return { data };
-  }),
+  list: publicProcedure
+    .input(getAttributesSchema)
+    .output(getAttributesResponseSchema)
+    .query(async ({ ctx }) => {
+      const data = await ctx.prisma.attribute.findMany({
+        include: {
+          values: true,
+        },
+        orderBy: {
+          name: "asc",
+        },
+      });
+      return { data };
+    }),
 
   byIdOrSlug: publicProcedure
-    .input(getAttributeByIdOrNameSchema)
+    .input(getAttributeByIdOrSlugSchema)
+    .output(getAttributeDetailResponseSchema)
     .query(async ({ ctx, input }) => {
       const data = await ctx.prisma.attribute.findFirst({
         where: {

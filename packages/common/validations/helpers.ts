@@ -24,7 +24,8 @@ export const paginationSchema = z
     page: z.number().nonnegative().catch(1),
     limit: z.number().nonnegative().catch(10),
   })
-  .transform(({ page, limit }) => ({
+  .default({ page: 1, limit: 15 })
+  .transform(({ page = 1, limit = 15 }) => ({
     page,
     offset: calculatePaginationOffset(page, limit),
     limit,
