@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { MoreHorizontal } from "lucide-react";
 
 import { ProductItem } from "@thantko/common/validations";
@@ -40,7 +40,9 @@ export default function ProductsList() {
   return (
     <div>
       <div className="flex justify-end py-4">
-        <Button size="sm">Add Product</Button>
+        <Button size="sm" asChild>
+          <Link to="/products/add">Add Product</Link>
+        </Button>
       </div>
       <ProductsTable products={products} />
     </div>

@@ -21,6 +21,7 @@ import { Route as MainOrdersImport } from './routes/_main/orders'
 import { Route as MainCustomersImport } from './routes/_main/customers'
 import { Route as MainAttributesImport } from './routes/_main/attributes'
 import { Route as MainAnalyticsImport } from './routes/_main/analytics'
+import { Route as MainProductsAddImport } from './routes/_main/products_.add'
 import { Route as MainAttributesAddImport } from './routes/_main/attributes_.add'
 import { Route as AuthAuthRegisterImport } from './routes/_auth/auth/register'
 import { Route as AuthAuthLoginImport } from './routes/_auth/auth/login'
@@ -80,6 +81,11 @@ const MainAttributesRoute = MainAttributesImport.update({
 
 const MainAnalyticsRoute = MainAnalyticsImport.update({
   path: '/analytics',
+  getParentRoute: () => MainRoute,
+} as any)
+
+const MainProductsAddRoute = MainProductsAddImport.update({
+  path: '/products/add',
   getParentRoute: () => MainRoute,
 } as any)
 
@@ -160,6 +166,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainAttributesAddImport
       parentRoute: typeof MainImport
     }
+    '/_main/products/add': {
+      preLoaderRoute: typeof MainProductsAddImport
+      parentRoute: typeof MainImport
+    }
     '/_main/attributes/$attributeId/edit': {
       preLoaderRoute: typeof MainAttributesAttributeIdEditImport
       parentRoute: typeof MainImport
@@ -181,6 +191,7 @@ export const routeTree = rootRoute.addChildren([
     MainAboutLazyRoute,
     MainIndexLazyRoute,
     MainAttributesAddRoute,
+    MainProductsAddRoute,
     MainAttributesAttributeIdEditRoute,
   ]),
 ])
