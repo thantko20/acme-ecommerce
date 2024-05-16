@@ -11,6 +11,7 @@ export const createAttributeSchema = z.object({
     .array(
       z.object({
         name: z.string().min(1, "Value must have at least 1 character"),
+        id: z.string().optional(),
       }),
     )
     .min(1, "Must have at least 1 value"),

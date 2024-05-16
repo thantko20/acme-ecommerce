@@ -74,21 +74,22 @@ export const attributesRouter = router({
       }
 
       const data = await ctx.prisma.$transaction(async (tx) => {
-        await tx.attributeValue.deleteMany({
-          where: {
-            AND: [
-              {
+        await Promise.all(
+          input.values.map((value) =>
+            tx.attributeValue.upsert({
+              where: {
+                id: value.id || "",
+              },
+              create: {
+                name: value.name,
                 attributeId: input.id,
               },
-              {
-                name: {
-                  notIn: input.values.map((value) => value.name),
-                },
+              update: {
+                name: value.name,
               },
-            ],
-          },
-        });
-
+            }),
+          ),
+        );
         return tx.attribute.update({
           where: {
             id: input.id,
@@ -96,12 +97,6 @@ export const attributesRouter = router({
           data: {
             name: input.name,
             slug: slugify(input.name, { lower: true }),
-            values: {
-              createMany: {
-                data: input.values,
-                skipDuplicates: true,
-              },
-            },
           },
           include: {
             values: true,
