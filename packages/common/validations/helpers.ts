@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { calculatePaginationOffset } from "../utils";
+
 export const emailSchema = z.string({
   invalid_type_error: "Invalid email",
   required_error: "Email is required",
@@ -17,17 +19,15 @@ export const passwordSchema = z
 
 export type PasswordSchema = z.infer<typeof passwordSchema>;
 
-export const paginationSchema = z.object({
-  page: z.number().nonnegative().catch(1),
-  limit: z.number().nonnegative().catch(10),
-});
+export const paginationSchema = z
+  .object({
+    page: z.number().nonnegative().catch(1),
+    limit: z.number().nonnegative().catch(10),
+  })
+  .transform(({ page, limit }) => ({
+    page,
+    offset: calculatePaginationOffset(page, limit),
+    limit,
+  }));
 
 export type PaginationSchema = z.infer<typeof paginationSchema>;
-
-export const transformedPaginationSchema = paginationSchema.transform(
-  ({ page, limit }) => ({ page, offset: (page - 1) * limit, limit }),
-);
-
-export type TransforedPaginationSchema = z.infer<
-  typeof transformedPaginationSchema
->;

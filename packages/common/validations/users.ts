@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { paginationSchema } from "./helpers";
 
-export const getUsersSchema = paginationSchema.merge(
+export const getUsersSchema = paginationSchema.and(
   z.object({
     name: z.string().optional(),
   }),

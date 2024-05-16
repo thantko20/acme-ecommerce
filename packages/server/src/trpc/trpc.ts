@@ -47,10 +47,23 @@ export const createContext = async ({
 };
 type Context = Awaited<ReturnType<typeof createContext>>;
 
-const t = initTRPC.context<Context>().create();
+const t = initTRPC.context<Context>().create({
+  errorFormatter(opts) {
+    console.log(opts.error);
+    return opts.error;
+  },
+});
 
 export const router = t.router;
-export const publicProcedure = t.procedure;
+export const publicProcedure = t.procedure.use(async ({ next, path, type }) => {
+  const start = Date.now();
+  const result = await next();
+  const durationMs = Date.now() - start;
+  result.ok ?
+    console.log("OK request timing:", { path, type, durationMs })
+  : console.log("Non-OK request timing", { path, type, durationMs });
+  return result;
+});
 export const authedProcedure = publicProcedure.use(async ({ ctx, next }) => {
   const unauthorizedError = new TRPCError({ code: "UNAUTHORIZED" });
   const { user, session, prisma, res } = ctx;

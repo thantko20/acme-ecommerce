@@ -9,7 +9,7 @@ export const usersRouter = router({
   listCustomers: adminProcedure
     .input(getUsersSchema)
     .query(async ({ ctx, input }) => {
-      const { limit, name, page } = input;
+      const { limit, name, offset } = input;
       const where: Prisma.UserWhereInput = { role: roles.USER };
       if (name) {
         where.name = {
@@ -20,7 +20,7 @@ export const usersRouter = router({
 
       return prisma.user.findMany({
         where,
-        skip: (page - 1) * limit,
+        skip: offset,
         take: limit,
       });
     }),

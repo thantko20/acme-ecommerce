@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { paginationSchema } from "./helpers";
+
 export const createAttributeSchema = z.object({
   name: z
     .string({ required_error: "Name is required" })
@@ -15,3 +17,21 @@ export const createAttributeSchema = z.object({
 });
 
 export type CreateAttributeSchema = z.infer<typeof createAttributeSchema>;
+
+export const editAttributeSchema = createAttributeSchema.merge(
+  z.object({
+    id: z.string({ required_error: "ID is required" }),
+  }),
+);
+export type EditAttributeSchema = z.infer<typeof editAttributeSchema>;
+
+export const getAttributesSchema = paginationSchema;
+export type GetAttributesSchema = z.infer<typeof getAttributesSchema>;
+
+export const getAttributeByIdOrNameSchema = z.object({
+  id: z.string({ required_error: "ID or Name is required" }),
+});
+
+export type GetAttributeByIdOrNameSchema = z.infer<
+  typeof getAttributeByIdOrNameSchema
+>;

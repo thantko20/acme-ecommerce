@@ -77,6 +77,7 @@ model Attribute {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   name               String              @unique
+  slug               String              @default("")
   values             AttributeValue[]
   skuAttributeValues SkuAttributeValue[]
   productAttributes  ProductAttribute[]
@@ -89,11 +90,12 @@ model AttributeValue {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  name               String              @unique
+  name               String
   attributeId        String              @map("attribute_id")
   attribute          Attribute           @relation(fields: [attributeId], references: [id])
   skuAttributeValues SkuAttributeValue[]
 
+  @@unique([name, attributeId])
   @@map("attribute_values")
 }
 

@@ -24,6 +24,7 @@ import { Route as MainAnalyticsImport } from './routes/_main/analytics'
 import { Route as MainAttributesAddImport } from './routes/_main/attributes_.add'
 import { Route as AuthAuthRegisterImport } from './routes/_auth/auth/register'
 import { Route as AuthAuthLoginImport } from './routes/_auth/auth/login'
+import { Route as MainAttributesAttributeIdEditImport } from './routes/_main/attributes_.$attributeId.edit'
 
 // Create Virtual Routes
 
@@ -97,6 +98,12 @@ const AuthAuthLoginRoute = AuthAuthLoginImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
+const MainAttributesAttributeIdEditRoute =
+  MainAttributesAttributeIdEditImport.update({
+    path: '/attributes/$attributeId/edit',
+    getParentRoute: () => MainRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -153,6 +160,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainAttributesAddImport
       parentRoute: typeof MainImport
     }
+    '/_main/attributes/$attributeId/edit': {
+      preLoaderRoute: typeof MainAttributesAttributeIdEditImport
+      parentRoute: typeof MainImport
+    }
   }
 }
 
@@ -170,6 +181,7 @@ export const routeTree = rootRoute.addChildren([
     MainAboutLazyRoute,
     MainIndexLazyRoute,
     MainAttributesAddRoute,
+    MainAttributesAttributeIdEditRoute,
   ]),
 ])
 
