@@ -1,56 +1,30 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { ProductForm } from "@/components/products";
 
 export const Route = createFileRoute("/_main/products/add")({
   component: AddProduct,
+  loader: async ({ context }) => {
+    const attributesResult = await context.client.attribute.list.query({
+      limit: 0,
+    });
+    return { attributes: attributesResult.data };
+  },
 });
 
 function AddProduct() {
+  const { attributes } = Route.useLoaderData();
   return (
     <div>
-      <ProductForm />
+      <ProductForm
+        attributes={attributes}
+        mode="create"
+        defaultValues={{
+          name: "",
+          description: "",
+          attributes: [{ attributeId: "" }],
+        }}
+      />
     </div>
-  );
-}
-
-function ProductForm() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Add Product</CardTitle>
-        <CardDescription>Just add a damn product!</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-6">
-          <div className="grid gap-3">
-            <Label htmlFor="name">Name</Label>
-            <Input
-              id="name"
-              type="text"
-              className="w-full"
-              defaultValue="Gamer Gear Pro Controller"
-            />
-          </div>
-          <div className="grid gap-3">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              defaultValue="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nisl nec ultricies ultricies, nunc nisl ultricies nunc, nec ultricies nunc nisl nec nunc."
-              className="min-h-32"
-            />
-          </div>
-        </div>
-      </CardContent>
-    </Card>
   );
 }

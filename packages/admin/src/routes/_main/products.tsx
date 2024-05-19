@@ -1,4 +1,4 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute, useRouter } from "@tanstack/react-router";
 import { MoreHorizontal } from "lucide-react";
 
 import { ProductItem } from "@thantko/common/validations";
@@ -27,6 +27,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { trpc } from "@/lib/trpc";
 
 export const Route = createFileRoute("/_main/products")({
   component: () => <ProductsList />,
@@ -50,6 +51,12 @@ export default function ProductsList() {
 }
 
 function ProductsTable({ products }: { products: ProductItem[] }) {
+  const router = useRouter();
+  const deleteMutation = trpc.product.delete.useMutation({
+    onSuccess: () => {
+      router.invalidate();
+    },
+  });
   return (
     <Card>
       <CardHeader>
@@ -102,8 +109,16 @@ function ProductsTable({ products }: { products: ProductItem[] }) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuItem>Edit</DropdownMenuItem>
-                      <DropdownMenuItem>Delete</DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to={`/products/${product.slug}/edit`}>Edit</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          deleteMutation.mutate({ id: product.id })
+                        }
+                      >
+                        Delete
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </TableCell>

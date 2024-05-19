@@ -25,6 +25,7 @@ import { Route as MainProductsAddImport } from './routes/_main/products_.add'
 import { Route as MainAttributesAddImport } from './routes/_main/attributes_.add'
 import { Route as AuthAuthRegisterImport } from './routes/_auth/auth/register'
 import { Route as AuthAuthLoginImport } from './routes/_auth/auth/login'
+import { Route as MainProductsProductIdEditImport } from './routes/_main/products_.$productId.edit'
 import { Route as MainAttributesAttributeIdEditImport } from './routes/_main/attributes_.$attributeId.edit'
 
 // Create Virtual Routes
@@ -104,6 +105,11 @@ const AuthAuthLoginRoute = AuthAuthLoginImport.update({
   getParentRoute: () => AuthRoute,
 } as any)
 
+const MainProductsProductIdEditRoute = MainProductsProductIdEditImport.update({
+  path: '/products/$productId/edit',
+  getParentRoute: () => MainRoute,
+} as any)
+
 const MainAttributesAttributeIdEditRoute =
   MainAttributesAttributeIdEditImport.update({
     path: '/attributes/$attributeId/edit',
@@ -174,6 +180,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MainAttributesAttributeIdEditImport
       parentRoute: typeof MainImport
     }
+    '/_main/products/$productId/edit': {
+      preLoaderRoute: typeof MainProductsProductIdEditImport
+      parentRoute: typeof MainImport
+    }
   }
 }
 
@@ -193,6 +203,7 @@ export const routeTree = rootRoute.addChildren([
     MainAttributesAddRoute,
     MainProductsAddRoute,
     MainAttributesAttributeIdEditRoute,
+    MainProductsProductIdEditRoute,
   ]),
 ])
 
