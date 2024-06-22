@@ -1,13 +1,12 @@
-import { Prisma, PrismaClient, User } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 
-import { roles } from "@thantko/common/types";
+import { User, roles } from "@thantko/common/types";
+import { UserWithCredentials } from "@thantko/common/validations";
 
 export interface UserRepository {
-  findByEmail(email: string): Promise<User | null>;
-  create(
-    data: Prisma.UserCreateInput,
-  ): Promise<Omit<User, "password" | "salt">>;
-  findAdminByEmail(email: string): Promise<User | null>;
+  findByEmail(email: string): Promise<UserWithCredentials | null>;
+  create(data: Prisma.UserCreateArgs["data"]): Promise<User>;
+  findAdminByEmail(email: string): Promise<UserWithCredentials | null>;
 }
 
 export const makeUsersRepository = (prisma: PrismaClient): UserRepository => {

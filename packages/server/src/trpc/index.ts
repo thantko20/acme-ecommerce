@@ -1,5 +1,5 @@
+import { authRouter } from "../auth/router";
 import { attributesRouter } from "./routers/attributes";
-import { authRouter } from "./routers/auth";
 import { productsRouter } from "./routers/products";
 import { usersRouter } from "./routers/users";
 import { router } from "./trpc";

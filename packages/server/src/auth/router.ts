@@ -10,13 +10,12 @@ import { SESSION_ID_KEY } from "../constants";
 import { adminProcedure, publicProcedure, router } from "../trpc/trpc";
 import { makeUsersRepository } from "../users/repository";
 import { makeCreateAdmin } from "../users/service";
-
-const generateToken = (byteSize: number = 15) => {
-  const bytes = crypto.randomBytes(byteSize);
-  return Buffer.from(bytes).toString("base64");
-};
-
-const SALT_ROUNDS = 10;
+import {
+  makeCreateAdminSession,
+  makeLoginAdmin,
+  makeLogoutAdmin,
+} from "./service";
+import { makeSessionRepository } from "./session-repository";
 
 export const authRouter = router({
   checkForFirstAdmin: publicProcedure.query(async ({ ctx }) => {
@@ -39,36 +38,19 @@ export const authRouter = router({
   loginAdmin: publicProcedure
     .input(loginSchema)
     .mutation(async ({ ctx, input }) => {
-      const loginError = new TRPCError({
-        message: "Invalid email or password.",
-        code: "BAD_REQUEST",
+      const loginAdmin = makeLoginAdmin({
+        userRepo: makeUsersRepository(ctx.prisma),
+      });
+      const createAdminSession = makeCreateAdminSession({
+        sessionRepo: makeSessionRepository(ctx.prisma),
       });
 
-      const admin = await ctx.prisma.user.findUnique({
-        where: { email: input.email, role: roles.ADMIN },
-      });
-      if (!admin) {
-        throw loginError;
-      }
-
-      const isValidPw = await bcrypt.compare(input.password, admin.password);
-      if (!isValidPw) {
-        throw loginError;
-      }
-
-      const sessionId = generateToken(15);
-      const expiresAt = dayjs().add(30, "days").toDate();
-      await ctx.prisma.session.create({
-        data: {
-          expiresAt,
-          sessionId,
-          userId: admin.id,
-        },
-      });
+      const admin = await loginAdmin(input);
+      const session = await createAdminSession(admin.id);
 
       const { password: _pw, salt: _salt, ...user } = admin;
-      ctx.res.cookie("sid", sessionId, {
-        expires: expiresAt,
+      ctx.res.cookie("sid", session.sessionId, {
+        expires: session.expiresAt,
         sameSite: "lax",
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -77,13 +59,10 @@ export const authRouter = router({
       return { user };
     }),
   logoutAdmin: publicProcedure.mutation(async ({ ctx }) => {
-    if (ctx.session?.sessionId) {
-      await ctx.prisma.session.delete({
-        where: {
-          sessionId: ctx.session?.sessionId,
-        },
-      });
-    }
+    const logoutAdmin = makeLogoutAdmin({
+      sessionRepo: makeSessionRepository(ctx.prisma),
+    });
+    await logoutAdmin(ctx.session);
     ctx.res.clearCookie(SESSION_ID_KEY);
   }),
 
