@@ -14,7 +14,7 @@ import { Route as RegisterRoute } from "./_auth/auth/register";
 const TanStackRouterDevtools =
   import.meta.env.PROD ?
     () => null
-  : lazy(() =>
+    : lazy(() =>
       import("@tanstack/router-devtools").then((res) => ({
         default: res.TanStackRouterDevtools,
       })),
@@ -35,9 +35,13 @@ export const Route = createRootRouteWithContext<{
       };
     }
 
-    const { hasAdmin } = await context.client.auth.checkForFirstAdmin.query();
-    const to = hasAdmin ? LoginRoute.fullPath : RegisterRoute.fullPath;
-    throw redirect({ to, from: "/" });
+    try {
+      const { hasAdmin } = await context.client.auth.checkForFirstAdmin.query();
+      const to = hasAdmin ? LoginRoute.fullPath : RegisterRoute.fullPath;
+      throw redirect({ to, from: "/" });
+    } catch (error) {
+      throw redirect({ to: '/auth/register' });
+    }
   },
   component: () => (
     <>

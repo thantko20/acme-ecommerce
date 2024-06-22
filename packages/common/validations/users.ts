@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { roles } from "../types";
+import "./";
 import { paginationSchema } from "./helpers";
 
 export const userWithCredentialsSchema = z.object({
@@ -11,6 +13,7 @@ export const userWithCredentialsSchema = z.object({
   email: z.string(),
   password: z.string(),
   salt: z.string(),
+  role: z.nativeEnum(roles),
 });
 export type UserWithCredentials = z.infer<typeof userWithCredentialsSchema>;
 
